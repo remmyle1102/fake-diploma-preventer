@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"fmt"
 	"io"
 	"log"
 	"net/http"
@@ -12,6 +13,13 @@ import (
 
 	"github.com/davecgh/go-spew/spew"
 )
+
+//Message received
+type Message struct {
+	StudentName    string
+	Grade          int
+	EduInstitution string
+}
 
 func run() error {
 	gin := makeGinRouter()
@@ -63,11 +71,12 @@ func writeBlockChain(c *gin.Context) {
 	decoder := json.NewDecoder(c.Request.Body)
 	if err := decoder.Decode(&m); err != nil {
 		respondWithJSON(c.Writer, c.Request, http.StatusBadRequest, c.Request.Body)
+		fmt.Println(err)
 		return
 	}
 	defer c.Request.Body.Close()
 
-	newBlock, err := generateBlock(Blockchain[len(Blockchain)-1], m.Grade, m.EduInstitution)
+	newBlock, err := generateBlock(Blockchain[len(Blockchain)-1], m.StudentName, m.Grade, m.EduInstitution)
 	if err != nil {
 		respondWithJSON(c.Writer, c.Request, http.StatusInternalServerError, m)
 		return

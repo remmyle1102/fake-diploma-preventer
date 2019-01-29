@@ -9,6 +9,7 @@ import (
 // Block store data that will be written to the blockchain
 type Block struct {
 	Index          int // position of the data record in the blockchain
+	StudentName    string
 	Grade          int
 	EduInstitution string // name of the educational institution
 	Hash           string // is a SHA256 identifier representing data record
@@ -16,25 +17,20 @@ type Block struct {
 	Timestamp      string // the time the data is written
 }
 
-//Message received
-type Message struct {
-	Grade          int
-	EduInstitution string
-}
-
 func calculateHash(block Block) string {
-	record := string(block.Index) + string(block.Grade) + block.EduInstitution + block.PrevBlockHash + block.Timestamp
+	record := string(block.Index) + string(block.Grade) + block.EduInstitution + block.PrevBlockHash + block.Timestamp + block.StudentName
 	hashFunc := sha256.New()
 	hashFunc.Write([]byte(record))
 	hashed := hashFunc.Sum(nil)
 	return hex.EncodeToString(hashed)
 }
 
-func generateBlock(prevBlock Block, grade int, eduInstitution string) (Block, error) {
+func generateBlock(prevBlock Block, studentName string, grade int, eduInstitution string) (Block, error) {
 	var newBlock Block
 	t := time.Now()
 
 	newBlock.Index = prevBlock.Index + 1
+	newBlock.StudentName = studentName
 	newBlock.Grade = grade
 	newBlock.EduInstitution = eduInstitution
 	newBlock.PrevBlockHash = prevBlock.Hash

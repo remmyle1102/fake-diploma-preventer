@@ -33,6 +33,7 @@ func run() error {
 func makeGinRouter() *gin.Engine {
 	ginRouter := gin.New()
 	ginRouter.Use(gin.Logger())
+	ginRouter.Use(gin.Recovery())
 	ginRouter.GET("/", getBlockchain)
 	ginRouter.POST("/", writeBlockChain)
 	return ginRouter

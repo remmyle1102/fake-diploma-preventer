@@ -16,7 +16,6 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-
 	blockchainServer = make(chan []Block)
 	t := time.Now()
 	genesisBlock := Block{0, "", 0, "", "", "", t.String()}

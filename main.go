@@ -17,8 +17,11 @@ func main() {
 
 	go func() {
 		t := time.Now()
-		genesisBlock := Block{0, "", 0, "", "", "", t.String()}
-		spew.Dump(generateBlock)
+		genesisBlock := Block{}
+		genesisBlock = Block{Difficulty: difficulty, Timestamp: t.String(), Index: 0, Nonce: "", Hash: calculateHash(genesisBlock)}
+
+		spew.Dump(genesisBlock)
+
 		Blockchain = append(Blockchain, genesisBlock)
 	}()
 	log.Fatal(run())

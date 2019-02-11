@@ -7,6 +7,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"sync"
 
 	"github.com/gin-gonic/gin"
 
@@ -19,6 +20,9 @@ type Message struct {
 	Grade          int
 	EduInstitution string
 }
+
+// Mutex prevents data races and make sure blocks aren't generated at the same time
+var mutex = &sync.Mutex{}
 
 func run() error {
 	gin := makeGinRouter()
@@ -67,12 +71,15 @@ func writeBlockChain(c *gin.Context) {
 		return
 	}
 	defer c.Request.Body.Close()
-
+	//ensure atomicity when creating new block
+	// If we don't lock it, multiple writes will create a data race.
+	mutex.Lock()
 	newBlock, err := generateBlock(Blockchain[len(Blockchain)-1], m.StudentName, m.Grade, m.EduInstitution)
 	if err != nil {
 		respondWithJSON(c.Writer, c.Request, http.StatusInternalServerError, m)
 		return
 	}
+	mutex.Unlock()
 
 	if isBlockValid(newBlock, Blockchain[len(Blockchain)-1]) {
 		newBlockchain := append(Blockchain, newBlock)

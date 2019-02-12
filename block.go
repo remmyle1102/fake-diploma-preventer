@@ -7,7 +7,8 @@ import (
 	"time"
 )
 
-const difficulty = 1
+// The difficulty to create a block
+const difficulty = 5
 
 // Block store data that will be written to the blockchain
 type Block struct {
@@ -43,11 +44,12 @@ func generateBlock(prevBlock Block, studentName string, grade int, eduInstitutio
 	newBlock.Difficulty = difficulty
 
 	for i := 0; ; i++ {
+		// base 16, with lower-case letters for a-f
 		hex := fmt.Sprintf("%x", i)
 		newBlock.Nonce = hex
 		if !isHashValid(calculateHash(newBlock), newBlock.Difficulty) {
 			fmt.Println(calculateHash(newBlock), " Keep Working")
-			time.Sleep(time.Second)
+			// time.Sleep(time.Second)
 			continue
 		} else {
 			fmt.Println(calculateHash(newBlock), " Block created, Good job!")

@@ -22,7 +22,10 @@ func main() {
 
 		spew.Dump(genesisBlock)
 
+		mutex.Lock()
 		Blockchain = append(Blockchain, genesisBlock)
+		mutex.Unlock()
+
 	}()
 	log.Fatal(run())
 }

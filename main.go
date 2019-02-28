@@ -4,7 +4,6 @@ import (
 	"log"
 	"net"
 	"os"
-	"time"
 
 	"github.com/davecgh/go-spew/spew"
 
@@ -16,10 +15,13 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	blockchainServer = make(chan []Block)
-	t := time.Now()
-	genesisBlock := Block{0, "", 0, "", "", "", t.String()}
-	spew.Dump(generateBlock)
+
+	genesisBlock := createGenesisBlock()
+	if len(Blockchain) != 0 {
+		spew.Dump(generateBlock)
+	} else {
+		spew.Dump(genesisBlock)
+	}
 	Blockchain = append(Blockchain, genesisBlock)
 
 	//start TCP and serve TCP server
@@ -28,6 +30,20 @@ func main() {
 		log.Fatal(err)
 	}
 	defer server.Close() //close the server when no longer need it.
+
+	go func() {
+		for candidate := range candidateBlocks {
+			mutex.Lock()
+			tempBlocks = append(tempBlocks, candidate)
+			mutex.Unlock()
+		}
+	}()
+
+	go func() {
+		for {
+			pickWinner()
+		}
+	}()
 
 	for {
 		conn, err := server.Accept()

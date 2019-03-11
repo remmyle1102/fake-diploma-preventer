@@ -65,6 +65,10 @@
 			"revisionTime": "2019-01-14T15:53:30Z"
 		},
 		{
+			"path": "github.com/libp2p/go-libp2p",
+			"revision": ""
+		},
+		{
 			"checksumSHA1": "GiVgQkx5acnq+JZtYiuHPlhHoso=",
 			"path": "github.com/mattn/go-isatty",
 			"revision": "3fb116b820352b7f0c281308a4d6250c22d94e27",
